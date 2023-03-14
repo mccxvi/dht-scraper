@@ -18,6 +18,7 @@ import mimetypes
 import json
 import re
 import secrets
+from datetime import datetime
 
 if not os.path.exists(f'dl'):
     os.makedirs(f'dl')
@@ -87,10 +88,14 @@ for cid in dbContent:
 								if inside['u'] == userid:
 									IndexUsername = userIndex[userid]
 
-							with open(f"dl/{serverName}/{properChannelName}/{ext}/{IndexUsername}_{fname}{ext}", "wb") as f:
+							msgTimestamp = str(inside['t'])[:-3]
+							fileTimestamp = datetime.fromtimestamp(int(msgTimestamp))
+							FileTime = (fileTimestamp.strftime("%Y-%m-%d"))
+
+							with open(f"dl/{serverName}/{properChannelName}/{ext}/[{FileTime}] {IndexUsername}_{fname}{ext}", "wb") as f:
 								f.write(response.content)
 
-							print(f" + | Downloaded '{IndexUsername}_{fname}{ext}' from [{properChannelName}]")			
+							print(f" + | Downloaded '[{FileTime}] {IndexUsername}_{fname}{ext}' from [{properChannelName}]")			
 		else:
 			pass
 
