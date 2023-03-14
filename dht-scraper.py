@@ -19,6 +19,9 @@ import json
 import re
 import secrets
 
+if not os.path.exists(f'dl'):
+    os.makedirs(f'dl')
+
 serverFile = input(" * | DHT File location: ")
 
 with open(serverFile, encoding="utf-8") as rd:
