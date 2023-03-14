@@ -6,4 +6,4 @@
 - copy 'Option 2' to your clipboard
 - open developer tools in discord/browser
 - paste the script into the console
-- run the script and save it to a file
+- run the script and after it's finished, save server result it to a file
