@@ -29,17 +29,35 @@ with open(serverFile, encoding="utf-8") as rd:
 	dbContent = data['data']
 	chnContent = data['meta']['channels']
 	findServerName = data['meta']['servers']
+	usrIndex = data['meta']['users']
 
 for i in findServerName:
 	serverName = i['name']
+	serverType = i['type']
+
+if serverType == "DM":
+	deliminatorType = "DIRECT MESSAGES"
+
+if serverType == "SERVER":
+	deliminatorType = "SERVER"
+
+if serverType == "GROUP":
+	deliminatorType = "GROUP CHAT"
 
 if not os.path.exists(f'dl/{serverName}'):
     os.makedirs(f'dl/{serverName}')
 
+userIndex = {}
 channelsFriendlyName = {}
+
+ind = 0
+for i in usrIndex:
+	userIndex[ind] = usrIndex[i]['name']
+	ind += 1
 
 for i in chnContent:
 	channelsFriendlyName[f'{i}'] = (f'{chnContent[i]["name"]}')
+
 
 for cid in dbContent:
 	for (post, inside) in dbContent[cid].items():
@@ -65,11 +83,15 @@ for cid in dbContent:
 							if not os.path.exists(f'dl/{serverName}/{properChannelName}/{ext}'):
 								os.makedirs(f'dl/{serverName}/{properChannelName}/{ext}')
 
-							with open(f"dl/{serverName}/{properChannelName}/{ext}/{fname}{ext}", "wb") as f:
+							for userid in userIndex:
+								if inside['u'] == userid:
+									IndexUsername = userIndex[userid]
+
+							with open(f"dl/{serverName}/{properChannelName}/{ext}/{IndexUsername}_{fname}{ext}", "wb") as f:
 								f.write(response.content)
 
-							print(f" + | Downloaded '{fname}{ext}' from [{properChannelName}]")			
+							print(f" + | Downloaded '{IndexUsername}_{fname}{ext}' from [{properChannelName}]")			
 		else:
 			pass
 
-print(f"\n * | FINISHED DOWNLOADING FROM '{serverName}' SERVER")
+print(f"\n * | FINISHED DOWNLOADING FROM '{serverName}' {deliminatorType}")
