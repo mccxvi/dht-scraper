@@ -20,6 +20,17 @@ import re
 import secrets
 from datetime import datetime
 
+def SanatizeUsername(username):
+	FORBIDDEN_CHARS = ["\", /", ":", "*", "?", "<", ">", "|"]
+
+	SanitizedUser = username
+
+	for i in FORBIDDEN_CHARS:
+		SanitizedUser = SanitizedUser.replace(i,"")
+
+	return SanitizedUser
+
+
 if not os.path.exists(f'dl'):
     os.makedirs(f'dl')
 
@@ -86,16 +97,17 @@ for cid in dbContent:
 
 							for userid in userIndex:
 								if inside['u'] == userid:
-									IndexUsername = userIndex[userid]
+									IndexUsername = str(userIndex[userid])
+									SanitizedUser = SanatizeUsername(IndexUsername)
 
 							msgTimestamp = str(inside['t'])[:-3]
 							fileTimestamp = datetime.fromtimestamp(int(msgTimestamp))
 							FileTime = (fileTimestamp.strftime("%Y-%m-%d"))
 
-							with open(f"dl/{serverName}/{properChannelName}/{ext}/[{FileTime}] {IndexUsername}_{fname}{ext}", "wb") as f:
+							with open(f"dl/{serverName}/{properChannelName}/{ext}/[{FileTime}] {SanitizedUser}_{fname}{ext}", "wb") as f:
 								f.write(response.content)
 
-							print(f" + | Downloaded '[{FileTime}] {IndexUsername}_{fname}{ext}' from [{properChannelName}]")			
+							print(f" + | Downloaded '[{FileTime}] {SanitizedUser}_{fname}{ext}' from [{properChannelName}]")			
 		else:
 			pass
 
