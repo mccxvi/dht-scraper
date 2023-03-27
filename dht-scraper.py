@@ -21,7 +21,7 @@ import secrets
 from datetime import datetime
 
 def SanatizeUsername(username):
-	FORBIDDEN_CHARS = ["\", /", ":", "*", "?", "<", ">", "|"]
+	FORBIDDEN_CHARS = ["/", ":", "*", "?", "<", ">", "|"]
 
 	SanitizedUser = username
 
