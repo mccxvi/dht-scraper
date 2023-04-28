@@ -21,15 +21,13 @@ import secrets
 from datetime import datetime
 
 def SanatizeUsername(username):
-	FORBIDDEN_CHARS = ["/", ":", "*", "?", "<", ">", "|"]
-
+	FORBIDDEN_CHARS = ["\\", "/", ":", "*", "?", "<", ">", "|"]
 	SanitizedUser = username
 
 	for i in FORBIDDEN_CHARS:
 		SanitizedUser = SanitizedUser.replace(i,"")
-
+		
 	return SanitizedUser
-
 
 if not os.path.exists(f'dl'):
     os.makedirs(f'dl')
@@ -73,7 +71,6 @@ for i in chnContent:
 
 for cid in dbContent:
 	for (post, inside) in dbContent[cid].items():
-
 		if "a" in inside:
 			for cont in inside['a']:
 				url = cont['url']
@@ -84,7 +81,6 @@ for cid in dbContent:
 					print(f" - | File doesn't exist anymore [Skipping]")
 				else:
 					fname = secrets.token_urlsafe(12)
-
 					for fcn in channelsFriendlyName:
 						if cid == fcn:
 							properChannelName = channelsFriendlyName[fcn]
