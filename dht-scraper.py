@@ -11,14 +11,8 @@
 
 #/////////////////////////////////////////
 
-import shutil
-import os
-import requests
-import mimetypes
-import json
-import re
-import secrets
 from datetime import datetime
+import os, re, requests, json
 
 def SanatizeUsername(username):
 	FORBIDDEN_CHARS = ["\\", "/", ":", "*", "?", "<", ">", "|"]
@@ -74,36 +68,33 @@ for cid in dbContent:
 		if "a" in inside:
 			for cont in inside['a']:
 				url = cont['url']
-				response = requests.get(url)
-				content_type = response.headers['content-type']
-				ext = mimetypes.guess_extension(content_type)
-				if ext == None:
-					print(f" - | File doesn't exist anymore [Skipping]")
-				else:
-					fname = secrets.token_urlsafe(12)
-					for fcn in channelsFriendlyName:
-						if cid == fcn:
-							properChannelName = channelsFriendlyName[fcn]
 
-							if not os.path.exists(f'dl/{serverName}/{properChannelName}'):
-							    os.makedirs(f'dl/{serverName}/{properChannelName}')
+				response = requests.get(url)	
+				orgfname = re.search("([a-zA-Z0-9\\s_\\.\\-\\(\\):])+$", url)[0]
 
-							if not os.path.exists(f'dl/{serverName}/{properChannelName}/{ext}'):
-								os.makedirs(f'dl/{serverName}/{properChannelName}/{ext}')
+				for fcn in channelsFriendlyName:
+					if cid == fcn:
+						properChannelName = channelsFriendlyName[fcn]
 
-							for userid in userIndex:
-								if inside['u'] == userid:
-									IndexUsername = str(userIndex[userid])
-									SanitizedUser = SanatizeUsername(IndexUsername)
+						if not os.path.exists(f'dl/{serverName}/{properChannelName}'):
+						    os.makedirs(f'dl/{serverName}/{properChannelName}')
 
-							msgTimestamp = str(inside['t'])[:-3]
-							fileTimestamp = datetime.fromtimestamp(int(msgTimestamp))
-							FileTime = (fileTimestamp.strftime("%Y-%m-%d"))
+						for userid in userIndex:
+							if inside['u'] == userid:
+								IndexUsername = str(userIndex[userid])
+								SanitizedUser = SanatizeUsername(IndexUsername)
 
-							with open(f"dl/{serverName}/{properChannelName}/{ext}/[{FileTime}] {SanitizedUser}_{fname}{ext}", "wb") as f:
+						msgTimestamp = str(inside['t'])[:-3]
+						fileTimestamp = datetime.fromtimestamp(int(msgTimestamp))
+						FileTime = (fileTimestamp.strftime("%Y-%m-%d %H%M%S"))
+
+						if response.status_code == 404:
+							print(f" - | 404 (Not Found) '[{FileTime}] {SanitizedUser}_{orgfname}' from [{properChannelName}]")
+						else:
+							with open(f"dl/{serverName}/{properChannelName}/[{FileTime}] {SanitizedUser}_{orgfname}", "wb") as f:
 								f.write(response.content)
 
-							print(f" + | Downloaded '[{FileTime}] {SanitizedUser}_{fname}{ext}' from [{properChannelName}]")			
+							print(f" + | Downloaded '[{FileTime}] {SanitizedUser}_{orgfname}' from [{properChannelName}]")			
 		else:
 			pass
 
