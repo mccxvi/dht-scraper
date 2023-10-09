@@ -12,6 +12,7 @@
 #/////////////////////////////////////////
 
 from datetime import datetime
+from urllib.parse import urljoin, urlparse
 import os, re, requests, json
 
 def SanatizeUsername(username):
@@ -68,6 +69,7 @@ for cid in dbContent:
 		if "a" in inside:
 			for cont in inside['a']:
 				url = cont['url']
+				url = urljoin(url, urlparse(url).path)
 
 				response = requests.get(url)	
 				orgfname = re.search("([a-zA-Z0-9\\s_\\.\\-\\(\\):])+$", url)[0]
