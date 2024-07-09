@@ -68,10 +68,10 @@ for cid in dbContent:
 	for (post, inside) in dbContent[cid].items():
 		if "a" in inside:
 			for cont in inside['a']:
-				url = cont['url']
-				url = urljoin(url, urlparse(url).path)
+				urlog = cont['url']
+				url = urljoin(urlog, urlparse(urlog).path)
 
-				response = requests.get(url)	
+				response = requests.get(urlog)	
 				orgfname = re.search("([a-zA-Z0-9\\s_\\.\\-\\(\\):])+$", url)[0]
 
 				for fcn in channelsFriendlyName:
